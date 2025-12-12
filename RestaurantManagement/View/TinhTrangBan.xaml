@@ -1,0 +1,227 @@
+﻿<UserControl x:Class="QuanLyNhaHang.View.TinhTrangBan"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:QuanLyNhaHang.View" 
+             xmlns:ViewModel="clr-namespace:QuanLyNhaHang.ViewModel"
+             TextElement.FontFamily="Comfortaa"
+             TextElement.FontSize="16"
+             mc:Ignorable="d" 
+             d:DesignHeight="660" d:DesignWidth="1060">
+    <UserControl.DataContext>
+        <ViewModel:TinhTrangBanViewModel x:Name="vm"/>
+    </UserControl.DataContext>
+
+    <Grid Background="White" Margin="0,0,0,-68">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <GridSplitter 
+                    Height="700" 
+                    Width="3" 
+                    Margin="0 30"/>
+        <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl x:Name="item"
+                          ItemsSource="{Binding Tables,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Width="175"
+                                Height="105"
+                                Margin="5,15,15,15"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Content="{Binding SoBan, StringFormat='Bàn {0}'}"
+                                Background="{Binding MauNen}"
+                                Command="{Binding ElementName=vm, Path=StatusOfTableCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip="{Binding TrangThai}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Grid Grid.Column="1">
+            <Separator 
+                        HorizontalAlignment="Left" 
+                        Height="0.8" 
+                        Margin="20 30" 
+                        Background="#46558a"/>
+            <Border Margin="20 0 20 0" CornerRadius="20" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100"/>
+                        <RowDefinition Height="340"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" 
+                            Padding="20" 
+                            Background="#CF0A0A" 
+                            Margin="0 20 0 0">
+                        <Grid>
+                            <TextBlock HorizontalAlignment="Center"
+                                       Foreground="#fff" 
+                                       FontWeight="SemiBold" 
+                                       FontSize="35"
+                                       Text="{Binding TitleOfBill}">
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                    <ScrollViewer Grid.Row="1"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ListView 
+                              ItemsSource="{Binding SelectedItems}"
+                              HorizontalAlignment="Center"
+                              HorizontalContentAlignment="Center">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="FontSize" Value="16"/>
+                                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="Tên món">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="Gray" BorderThickness=".5" Margin="-6,-3">
+                                                        <TextBlock Text="{Binding FoodName}" Margin="6,3"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+
+                                        <GridViewColumn Header="Số lượng">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="Gray" BorderThickness=".5" Margin="-6,-3">
+                                                        <TextBlock Text="{Binding Quantity}" Margin="6,3"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+
+                                        <GridViewColumn Header="Thành tiền">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Border BorderBrush="Gray" BorderThickness=".5" Margin="-6,-3">
+                                                        <TextBlock Text="{Binding PriceVNDCurrency}" Margin="6,3"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </ScrollViewer>
+
+                    <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,15,0,0">
+                        <Separator Margin="20 10"/>
+
+                        <!-- HIỂN THỊ TẠM TÍNH -->
+                        <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                            <TextBlock Text="Tạm tính:" FontSize="20" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding TempTotalText}"
+                                       FontSize="20"
+                                       Margin="5,0,0,0"
+                                       VerticalAlignment="Center"/> 
+                        </StackPanel>
+
+                        <!-- NHẬP % GIẢM GIÁ -->
+                        <StackPanel Orientation="Horizontal" Margin="10,5,0,0">
+                            <TextBlock Text="Giảm (%):" FontSize="20" VerticalAlignment="Center"/>
+                            <TextBox Width="150"
+                                     Margin="5,0,0,0"
+                                     Text="{Binding DiscountPercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Button Content="ÁP DỤNG"
+                                    Width="100"
+                                    Height="28"
+                                    Margin="38,0,0,0"
+                                    Command="{Binding ApplyDiscountCommand}" RenderTransformOrigin="0.5,0.5">
+                                <Button.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform/>
+                                        <SkewTransform/>
+                                        <RotateTransform Angle="0.287"/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Button.RenderTransform>
+                            </Button>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                            <TextBlock Text="Tiền giảm:" FontSize="20" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding DiscountAmountText}"
+                                       FontSize="20"
+                                       Margin="5,0,0,0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                    <!-- HIỂN THỊ THÀNH TIỀN -->
+                        <StackPanel Orientation="Horizontal" Margin="10,5,0,0">
+                            <TextBlock Text="THÀNH TIỀN:" 
+                                       FontSize="20"
+                                       FontWeight="Bold"/>  
+                            <TextBlock Text="{Binding FinalAmountText}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#1C3879"
+                                       Margin="10,0,0,0"/>  
+                        </StackPanel>
+
+                        <!-- THANH TOÁN & CHUYỂN BÀN -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="10 5 0 0">
+                            <Button HorizontalAlignment="Center"                               
+                                    Background="Red" 
+                                    BorderBrush="Yellow" 
+                                    Width="150"
+                                    Height="40"
+                                    FontSize="15"
+                                    FontWeight="SemiBold"
+                                    Command="{Binding GetPaymentCommand}">
+                                <TextBlock Foreground="White" Text="THANH TOÁN"/>
+                            </Button>
+
+                            <ComboBox Margin="20,0,0,0"
+                                      ItemsSource="{Binding EmptyTables}"
+                                      SelectedItem="{Binding SelectedTable, Mode=TwoWay}"                                      
+                                      Width="150"
+                                      Height="40">
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="10 5 0 0">
+                            <Button Margin="0,5,0,0"
+                                    HorizontalAlignment="Center"
+                                    Width="150"
+                                    Height="40"
+                                    FontSize="15"
+                                    FontWeight="SemiBold"
+                                    Command="{Binding GetSwitchTableCommand}">
+                                <TextBlock Foreground="White" Text="CHUYỂN BÀN"/>
+                            </Button>
+
+                            <Label Margin="20,10"
+                                   Foreground="Black" 
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Content="Danh sách bàn trống"
+                                   HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
